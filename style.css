@@ -819,8 +819,9 @@ html[data-lang='en'] .lang-toggle .lang-en {
     max-height: none;
     overflow-y: auto;
     /* Marks the boundary now that the panel no longer sits flush against
-       the gallery's own bottom edge. */
-    border-top: 2px solid var(--color-line);
+       the gallery's own bottom edge — 1px to match the rail/gallery
+       divider above it, rather than the topbar's heavier 2px rule. */
+    border-top: 1px solid var(--color-line);
   }
 
   /* About page: left exactly as it was before the independent-scroll
