@@ -750,7 +750,12 @@ html[data-lang='en'] .lang-toggle .lang-en {
   .layout {
     direction: rtl;
     flex-direction: column;
-    height: auto;
+    /* Fixed to the viewport (minus the topbar) instead of height: auto —
+       that's what gives .info-panel below a real "remaining space" budget
+       to fill, so it can scroll its own contents internally the same way
+       .gallery-panel already does, instead of the whole page scrolling
+       past it. */
+    height: calc(100vh - var(--topbar-h));
   }
 
   .info-panel,
@@ -780,13 +785,45 @@ html[data-lang='en'] .lang-toggle .lang-en {
   .gallery-panel {
     order: 2;
     border-left: none;
-    height: 60vh;
+    /* Gallery box and description box below split whatever height is left
+       after the rail, so the description box ends up a third of the
+       gallery box's *rendered* height. The grow factor itself isn't a
+       plain 3 — the description box's own padding/border (67px, which
+       can't be compressed below zero) eats into its share first, so the
+       remaining flexible space has to be split closer to ~4.9:1 to land
+       on an actual 3:1 result once that fixed 67px is added back on top.
+       (Verified empirically at a 390×844 viewport — holds close enough
+       across other phone heights too, since the rail's height stays
+       constant regardless of viewport.) */
+    flex: 4.9 1 0;
+    min-height: 0;
   }
 
   .info-panel {
     order: 3;
+    /* Claims 1 share of the leftover space to the gallery's 3 (see above),
+       and scrolls its own contents within that box instead of growing the
+       page. min-height: 0 overrides flexbox's default of never shrinking a
+       child below its content size, which would otherwise defeat the
+       overflow-y scroll below. */
+    flex: 1 1 0;
+    min-height: 0;
     height: auto;
     max-height: none;
+    overflow-y: auto;
+    /* Marks the boundary now that the panel no longer sits flush against
+       the gallery's own bottom edge. */
+    border-top: 2px solid var(--color-line);
+  }
+
+  /* About page: left exactly as it was before the independent-scroll
+     change above — the contact block just flows normally after the bio
+     and portrait, no fixed-height scroll box, no extra divider line. */
+  .info-panel.info-panel--about {
+    flex: none;
+    height: auto;
+    overflow-y: visible;
+    border-top: none;
   }
 
   /* --- About page overrides ------------------------------------------- */
@@ -816,6 +853,7 @@ html[data-lang='en'] .lang-toggle .lang-en {
      static text, not something that needs its own scroll, and the 60vh cap
      was hiding the portrait below the fold entirely on narrow phones. */
   .gallery-panel.gallery-panel--about {
+    flex: none;
     height: auto;
     overflow: visible;
   }
