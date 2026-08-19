@@ -786,27 +786,24 @@ html[data-lang='en'] .lang-toggle .lang-en {
     order: 2;
     border-left: none;
     /* Gallery box and description box below split whatever height is left
-       after the rail, so the description box ends up a third of the
-       gallery box's *rendered* height. The grow factor itself isn't a
-       plain 3 — the description box's own padding/border (67px, which
-       can't be compressed below zero) eats into its share first, so the
-       remaining flexible space has to be split closer to ~4.9:1 to land
-       on an actual 3:1 result once that fixed 67px is added back on top.
-       (Verified empirically at a 390×844 viewport — holds close enough
-       across other phone heights too, since the rail's height stays
-       constant regardless of viewport.) */
-    flex: 4.9 1 0;
+       after the rail. Ratio tuned to match a specific reference screenshot
+       (gallery ~294px, description ~401px at a 390×844 viewport) rather
+       than a round number — the description box's own padding/border
+       (67px, which can't be compressed below zero) eats into its share
+       first, which is why gallery's grow factor ends up slightly *smaller*
+       than info's even though the description box reads taller overall. */
+    flex: 7 1 0;
     min-height: 0;
   }
 
   .info-panel {
     order: 3;
-    /* Claims 1 share of the leftover space to the gallery's 3 (see above),
+    /* Claims 8 shares of the leftover space to the gallery's 7 (see above),
        and scrolls its own contents within that box instead of growing the
        page. min-height: 0 overrides flexbox's default of never shrinking a
        child below its content size, which would otherwise defeat the
        overflow-y scroll below. */
-    flex: 1 1 0;
+    flex: 8 1 0;
     min-height: 0;
     height: auto;
     max-height: none;
