@@ -620,6 +620,7 @@ function renderRail() {
 }
 
 function renderInfoPanel() {
+  infoPanel.classList.toggle('info-panel--about', state.view === 'about');
   if (state.view === 'about') {
     // Figma's About frame only puts the contact block in this column — no
     // separate "About" title above it.

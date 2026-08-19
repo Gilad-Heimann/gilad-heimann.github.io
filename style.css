@@ -783,28 +783,33 @@ html[data-lang='en'] .lang-toggle .lang-en {
     border-left: 1px solid var(--color-line);
   }
 
+  .works-card-active-title {
+    /* 30% smaller than the desktop 13px. */
+    font-size: 9.1px;
+  }
+
   .gallery-panel {
     order: 2;
     border-left: none;
     /* Gallery box and description box below split whatever height is left
-       after the rail, targeting an even 50/50 rendered split. The grow
-       factor isn't simply 1:1 — the description box's own padding/border
-       (67px, which can't be compressed below zero) is added to its share
-       on top of whatever flex-grow gives it, so gallery needs a slight
-       grow lead to compensate and still land on an even split. */
-    flex: 1.239 1 0;
+       after the rail, targeting a description:gallery ratio of 35:75
+       (i.e. the description renders at ~46.7% of the gallery's height).
+       The grow factor isn't simply that ratio inverted — the description
+       box's own padding/border (67px, which can't be compressed below
+       zero) is added to its share on top of whatever flex-grow gives it,
+       so gallery needs a larger grow lead to compensate. */
+    flex: 3.0336 1 0;
     min-height: 0;
   }
 
   .info-panel {
     order: 3;
-    /* Claims its (slightly smaller) share of the leftover space, then the
-       fixed 67px of its own padding/border on top (see above) — landing
-       at an even 50/50 split with the gallery's final rendered height.
-       Scrolls its own contents within that box instead of growing the
-       page; min-height: 0 overrides flexbox's default of never shrinking
-       a child below its content size, which would otherwise defeat the
-       overflow-y scroll below. */
+    /* Claims its (smaller) share of the leftover space, then the fixed
+       67px of its own padding/border on top (see above) — landing at the
+       35:75 description:gallery ratio. Scrolls its own contents within
+       that box instead of growing the page; min-height: 0 overrides
+       flexbox's default of never shrinking a child below its content
+       size, which would otherwise defeat the overflow-y scroll below. */
     flex: 1 1 0;
     min-height: 0;
     height: auto;
