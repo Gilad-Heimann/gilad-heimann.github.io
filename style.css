@@ -227,7 +227,12 @@ html[data-lang='en'] .lang-toggle .lang-en {
 }
 
 .col-divider--2 {
-  right: var(--col-side);
+  /* Retired: this used to sit at a fixed offset from the right edge,
+     which only matched the gallery/rail seam back when .works-rail was a
+     rigid fixed width. Now that it can shrink, that seam is drawn by
+     .works-rail's own border-left instead, which always tracks its
+     actual (variable) edge. */
+  display: none;
 }
 
 @media (max-width: 980px) {
@@ -486,8 +491,20 @@ html[data-lang='en'] .lang-toggle .lang-en {
 /* --- Center column: gallery ---------------------------------------------- */
 
 .gallery-panel {
-  flex: 1 1 auto;
-  min-width: 0;
+  /* A real basis (616px — its natural size at a typical 1280px desktop
+     width, with .info-panel at 332px and .works-rail at its own 332px)
+     instead of 0. Paired with a flex-shrink of 1 against the rail's 200
+     below, this is what keeps the gallery visually parked at its normal
+     size while the window narrows — the shrink algorithm distributes any
+     deficit by (shrink × basis), so with the rail weighted ~100x higher
+     almost none of the narrowing reaches the gallery until the rail has
+     already been squeezed down to its own floor. flex-grow: 1 still lets
+     it soak up any extra room on wider screens, same as before. */
+  flex: 1 1 616px;
+  /* Absolute last-resort floor, reached only once .works-rail is already
+     pinned at its own min-width and the gallery is the sole remaining
+     column able to give up any more space. */
+  min-width: 480px;
   overflow: hidden;
   background: var(--color-placeholder-bg);
 }
@@ -595,9 +612,24 @@ html[data-lang='en'] .lang-toggle .lang-en {
 .works-rail {
   direction: rtl;
   width: var(--col-side);
-  flex: 0 0 var(--col-side);
+  /* Allowed to shrink now (was 0 0, i.e. rigid) — and weighted ~100x more
+     eager to than the gallery's flex-shrink: 1 (see .gallery-panel), so
+     this column absorbs essentially all of the narrowing first, down to
+     a floor that keeps the thumbnails legible. Only once it's pinned at
+     that floor does the gallery start giving up space too. flex-grow
+     stays 0 so this column never grows past its own 332px on wide
+     screens — extra room still goes entirely to the gallery. */
+  flex: 0 200 var(--col-side);
+  min-width: 160px;
   overflow-y: auto;
   background: var(--color-bg);
+  /* Draws the gallery/rail seam itself now that this column's width is
+     dynamic — the separate .col-divider--2 overlay below was positioned
+     at a fixed offset from the right edge, which only lined up with this
+     column's left edge while it was a rigid fixed width. A real border on
+     the shrinking element always tracks its own edge, whatever that ends
+     up being. */
+  border-left: 1px solid var(--color-line);
 }
 
 .works-card {
@@ -756,12 +788,27 @@ html[data-lang='en'] .lang-toggle .lang-en {
        .gallery-panel already does, instead of the whole page scrolling
        past it. */
     height: calc(100vh - var(--topbar-h));
+    /* iOS Safari quirk: 100vh is measured against the LARGEST possible
+       viewport (toolbar collapsed), not the one actually visible when the
+       address bar is expanded — which it usually is right after a page
+       loads, since the page itself was never meant to scroll enough to
+       auto-collapse it. That mismatch is what let the whole page scroll
+       instead of staying put with only the description box scrolling
+       internally. 100dvh tracks the *current* visible viewport instead,
+       so it's declared second — real browser support and a plain 100vh
+       fallback stay in place for anything that doesn't understand it. */
+    height: calc(100dvh - var(--topbar-h));
   }
 
   .info-panel,
   .works-rail {
     width: 100%;
     flex: none;
+    /* Resets the desktop-only shrink floor from the base rule — at mobile
+       widths this column is 100% width in a column layout, not a row
+       negotiating for space, so a fixed floor here would just overflow
+       the viewport on narrow phones. */
+    min-width: 0;
     border-left: none;
     border-bottom: 1px solid var(--color-line);
   }
@@ -795,24 +842,29 @@ html[data-lang='en'] .lang-toggle .lang-en {
     order: 2;
     border-left: none;
     /* Gallery box and description box below split whatever height is left
-       after the rail, targeting a description:gallery ratio of 35:75
-       (i.e. the description renders at ~46.7% of the gallery's height).
-       The grow factor isn't simply that ratio inverted — the description
-       box's own padding/border (67px, which can't be compressed below
-       zero) is added to its share on top of whatever flex-grow gives it,
-       so gallery needs a larger grow lead to compensate. */
-    flex: 3.0336 1 0;
+       after the rail, targeting a rendered description height that's 40%
+       of the gallery's. The grow factor isn't simply 2.5:1 (the inverse
+       of 40%) — the description box's own padding/border (66px, which
+       can't be compressed below zero) is added to its share on top of
+       whatever flex-grow gives it, so gallery needs a larger grow lead
+       than the raw ratio to compensate. */
+    flex: 3.688 1 0;
     min-height: 0;
+    /* Resets the desktop-only 480px shrink floor — irrelevant to a
+       full-width column on mobile, and would force horizontal overflow
+       on any phone narrower than that. */
+    min-width: 0;
   }
 
   .info-panel {
     order: 3;
     /* Claims its (smaller) share of the leftover space, then the fixed
-       67px of its own padding/border on top (see above) — landing at the
-       35:75 description:gallery ratio. Scrolls its own contents within
-       that box instead of growing the page; min-height: 0 overrides
-       flexbox's default of never shrinking a child below its content
-       size, which would otherwise defeat the overflow-y scroll below. */
+       66px of its own padding/border on top (see above) — landing at 40%
+       of the gallery's final rendered height. Scrolls its own contents
+       within that box instead of growing the page; min-height: 0
+       overrides flexbox's default of never shrinking a child below its
+       content size, which would otherwise defeat the overflow-y scroll
+       below. */
     flex: 1 1 0;
     min-height: 0;
     height: auto;
