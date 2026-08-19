@@ -1,0 +1,845 @@
+/* ==========================================================================
+   גלעד היימן — Portfolio
+   Built from Figma (file: portfolio, frame: HomePage/Kibutzim, node 4146:361)
+   ========================================================================== */
+
+/* --- Narkiss Tam (licensed) — self-hosted, converted from the supplied OTFs.
+   Narkiss Block is used for the tag/glossary list in the Figma file but
+   hasn't been supplied yet; that block currently falls back to Narkiss Tam
+   too. Drop the Block OTFs in assets/fonts/ and add matching @font-face
+   rules + a --font-block variable to bring it in. */
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Light-TRIAL.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Regular-TRIAL.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Medium-TRIAL.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Semibold-TRIAL.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Bold-TRIAL.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Heavy-TRIAL.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Narkiss Tam';
+  src: url('assets/fonts/NarkissTam-Black-TRIAL.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-bg: #ffffff;
+  --color-ink: #111111;
+  --color-muted: #8a8a8a;
+  --color-line: #000000;
+  --color-line-soft: rgba(0, 0, 0, 0.14);
+  --color-placeholder-bg: #eeeeee;
+  --color-kibutzim: #519a5d;
+  --topbar-h: 55px;
+  --col-side: 332px;
+  --font-ui: 'Narkiss Tam', 'Heebo', 'Segoe UI', Arial, sans-serif;
+  --font-block: 'Narkiss Tam', 'Heebo', 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Topbar                                                                  */
+/* ---------------------------------------------------------------------- */
+
+.topbar {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-h);
+  /* Horizontal inset matches .info-panel's own left padding (22px), so the
+     language toggle lines up with the title/description/labels column
+     beneath it. The same value on the right keeps "Work | Gilad Heimann"
+     the same distance from the right edge as the toggle is from the left —
+     the topbar stays symmetrical either way. */
+  padding: 0 22px;
+  border-bottom: 2px solid var(--color-line);
+  background: var(--color-bg);
+  position: relative;
+  z-index: 10;
+}
+
+.lang-toggle {
+  direction: rtl;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.lang-toggle .lang-he {
+  font-weight: 700;
+}
+
+.lang-toggle .lang-en {
+  font-weight: 400;
+}
+
+html[data-lang='en'] .lang-toggle .lang-he {
+  font-weight: 400;
+}
+
+html[data-lang='en'] .lang-toggle .lang-en {
+  font-weight: 700;
+}
+
+.topbar-right {
+  direction: rtl;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+}
+
+.site-name {
+  font-weight: 400;
+}
+
+.works-link {
+  font-weight: 400;
+}
+
+.works-link.is-active,
+.site-name.is-active {
+  font-weight: 700;
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--color-line);
+  display: inline-block;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout — three physical columns, independent of text direction         */
+/* ---------------------------------------------------------------------- */
+
+.layout {
+  direction: ltr;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  height: calc(100vh - var(--topbar-h));
+  min-height: 480px;
+}
+
+.col-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /*
+    Back to a true 1px hairline — thinner than the 2px header rule, as in
+    Figma. The 2px width was a hedge against a sub-pixel rendering gap,
+    but the actual "gap" turned out to be a stray edge pixel baked into
+    a couple of the thumbnail images (fixed at the asset level), not a
+    rounding issue with this line. No need for the extra width now.
+  */
+  width: 1px;
+  background: var(--color-line);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.col-divider--1 {
+  left: var(--col-side);
+}
+
+.col-divider--2 {
+  right: var(--col-side);
+}
+
+@media (max-width: 980px) {
+  .col-divider {
+    display: none;
+  }
+}
+
+/* --- Left column: info panel -------------------------------------------- */
+
+.info-panel {
+  direction: rtl;
+  width: var(--col-side);
+  flex: 0 0 var(--col-side);
+  overflow-y: auto;
+  padding: 24px 22px 40px;
+}
+
+.info-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: 0.12em;
+  margin: 0 0 2px;
+}
+
+.info-description p {
+  font-size: 14px;
+  line-height: 23px;
+  white-space: pre-wrap;
+  margin: 0 0 16px;
+}
+
+.info-year {
+  font-size: 10px;
+  color: var(--color-ink);
+  letter-spacing: 0.12em;
+  /* Twice the gap between paragraphs (2 × the 16px above), so the
+     description reads as a clearly separate block from the year. */
+  margin: 0 0 32px;
+}
+
+/* End-of-description mark, as in Figma — a solid dot right after the last
+   word of the last paragraph. Built in script.js as a real element (paired
+   with that last word inside a single white-space:nowrap span) rather than
+   a CSS ::after on the paragraph, so the dot can never wrap onto a line of
+   its own — a plain ::after is its own breakable inline box and would
+   occasionally strand itself below the text once the last line got long
+   enough. Drawn as an actual 10x10px circle rather than a scaled-down "●"
+   character, so the size is exact instead of riding on font metrics. */
+.info-last-word {
+  white-space: nowrap;
+}
+
+.info-end-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-inline-start: 6px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  vertical-align: middle;
+}
+
+.info-glossary {
+  margin-top: 32px;
+}
+
+.info-glossary ul {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-glossary li {
+  font-family: var(--font-block);
+  font-size: 10px;
+  line-height: 17px;
+  letter-spacing: 0.12em;
+}
+
+.info-empty-note {
+  margin-top: 20px;
+  padding: 12px;
+  border: 1px dashed var(--color-line-soft);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 19px;
+  color: var(--color-muted);
+}
+
+/* --- About: left column (contact) ---------------------------------------- */
+
+.about-contact-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 21px;
+  margin: 0 0 2px;
+}
+
+.about-contact a {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  line-height: 21px;
+}
+
+.about-contact a:hover {
+  text-decoration: underline;
+}
+
+/* English contact block — the container's own dir flips (see script.js),
+   which the heading picks up automatically since it has no text-align of
+   its own. The links need an explicit override because their text-align is
+   hardcoded above; their dir="ltr" is unconditional (needed even in Hebrew
+   mode, for the digits/handle) so it can't be used as the language signal
+   the way it is elsewhere on the site. */
+.about-contact[dir='ltr'] a {
+  text-align: left;
+}
+
+/* --- About: middle column (bio + portrait) -------------------------------- */
+
+.about-bio-panel {
+  /* 416px is the actual Figma text-box width, not a container with extra
+     padding cutting into it (that was making the rendered text 368px —
+     too narrow). Top offset matches the 24px padding-top both
+     .info-panel (יצירת קשר) and .about-rail (רקע אקדמי) use, so all three
+     columns start at the same height. */
+  width: 416px;
+  max-width: 100%;
+  margin: 24px auto 0;
+  padding: 0;
+  /* Positioning context for .about-portrait, which is pinned at a fixed
+     offset regardless of bio text length/language — see that rule. */
+  position: relative;
+}
+
+.about-bio-panel p {
+  direction: rtl;
+  text-align: right;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  margin: 0 0 27px;
+}
+
+/* English bio paragraphs carry dir="ltr" (see renderAboutGallery) — the
+   direction/text-align above are hardcoded rather than defaulted from
+   direction, so they need an explicit override here too, same reasoning
+   as the info-description/tags left-alignment on project pages. */
+.about-bio-panel p[dir='ltr'] {
+  direction: ltr;
+  text-align: left;
+}
+
+.about-portrait {
+  /* Pinned at a fixed offset from the top of .about-bio-panel instead of
+     flowing after the bio paragraphs, so it doesn't shift when the bio
+     text above it is a different length in Hebrew vs. English (it was
+     landing ~54px higher in Hebrew before this). 509px matches where it
+     already sat in the English layout, which is the position to keep. */
+  position: absolute;
+  top: 509px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: 141px;
+}
+
+/* --- About: right column (background / experience / skills) -------------- */
+
+.about-rail {
+  padding: 24px 22px 40px;
+}
+
+.about-section {
+  margin-bottom: 32px;
+}
+
+.about-section-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 21px;
+  margin: 0 0 12px;
+}
+
+/*
+  A fixed-width tag column (not content-sized) so the description text
+  lines up as a real second column across every entry — in Figma the year/
+  tag box is a constant ~89px regardless of whether it holds a short
+  "[2026]" or a long "[2022 - 2026]", and the description always starts
+  at that same fixed offset. Flexbox space-between (the previous approach)
+  sized the tag to its own content instead, so entries with a longer tag
+  pushed their description further left than entries with a short one —
+  each row aligned within itself but the rows didn't line up with each
+  other.
+*/
+.about-entry {
+  direction: rtl;
+  display: grid;
+  /* Both columns fixed, straight from Figma's own node sizes: the tag box
+     is 89px and the description text box is 156px — the description
+     column was "1fr" (stretching to fill the rest of the rail) before,
+     which is why it read wider than Figma. Figma actually leaves the rest
+     of the rail's width empty rather than filling it. */
+  grid-template-columns: 89px 156px;
+  /* baseline, not start — the tag is 10px and the description is 13px,
+     so top-aligning their boxes still left the two text baselines
+     sitting at different heights. Baseline alignment lines up the tag
+     with the first line of the description instead of with its box. */
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.about-entry:last-child {
+  margin-bottom: 0;
+}
+
+.about-entry-text {
+  font-size: 13px;
+  line-height: 21px;
+  letter-spacing: 0.03em;
+}
+
+.about-entry-text span {
+  display: block;
+}
+
+.about-entry-tag {
+  text-align: right;
+  font-size: 10px;
+  color: var(--color-ink);
+  letter-spacing: 0.12em;
+}
+
+/* English rail entries: .about-entry hardcodes direction: rtl above, so the
+   dir="ltr" HTML attribute set in script.js needs a same-specificity-class
+   override here to actually take effect. Flipping direction alone moves the
+   tag column from the right side to the left (the grid's column order in
+   the markup doesn't change) — .about-entry-tag's text-align is hardcoded
+   too, so it needs its own override to hug the new outer (left) edge
+   instead of sitting flush against the text column. .about-entry-text has
+   no hardcoded text-align, so it already follows the inherited direction
+   without needing an override here. */
+.about-entry[dir='ltr'] {
+  direction: ltr;
+}
+
+.about-entry[dir='ltr'] .about-entry-tag {
+  text-align: left;
+}
+
+/* --- Center column: gallery ---------------------------------------------- */
+
+.gallery-panel {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--color-placeholder-bg);
+}
+
+.gallery-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.gallery-image-wrap {
+  /*
+    Figma: 765px-wide gallery column, image inset ~36-40px on every side
+    (side and top/bottom margins are essentially the same). Percentage
+    padding on all four sides gives that — CSS resolves top/bottom
+    percentages against the containing block's *width*, same as left/
+    right, so all four insets stay equal at any viewport width instead
+    of the vertical gap being a fixed, unrelated px value.
+  */
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 5%;
+}
+
+.gallery-image-wrap:not(:first-child) {
+  border-top: 1px solid var(--color-line);
+}
+
+.gallery-image-wrap--full {
+  /*
+    Real photography (as opposed to a website screenshot shown "floating"
+    on a solid backdrop) doesn't get the inset matting — it fills the
+    column edge-to-edge, flush with the dividing lines on every side.
+  */
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-image-wrap--full:last-child {
+  /*
+    The padded/matted style always shows a hairline of background color
+    below the last image, which reads as a natural close. Full-bleed has
+    no padding to do that, so the last photo needs its own explicit
+    bottom divider instead — matching the border-top used between stacked
+    images, just on the other edge.
+  */
+  border-bottom: 1px solid var(--color-line);
+}
+
+.gallery-image-wrap img {
+  width: 100%;
+  height: auto;
+}
+
+.gallery-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.gallery-image-slot-empty {
+  aspect-ratio: 689 / 397;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+}
+
+.gallery-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 40px;
+  text-align: center;
+}
+
+.gallery-placeholder img {
+  max-width: 280px;
+  width: 60%;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-placeholder p {
+  direction: rtl;
+  font-size: 13px;
+  color: var(--color-muted);
+  max-width: 340px;
+  line-height: 20px;
+  margin: 0;
+}
+
+/* --- Right column: works rail (project switcher) -------------------------- */
+
+.works-rail {
+  direction: rtl;
+  width: var(--col-side);
+  flex: 0 0 var(--col-side);
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+
+.works-card {
+  display: block;
+  width: 100%;
+  position: relative;
+  border: none;
+  border-bottom: 1px solid var(--color-line);
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--color-placeholder-bg);
+}
+
+.works-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.works-card-frame {
+  /*
+    Same "image inset on its own background color" convention as the main
+    gallery's .gallery-image-wrap — padding as a percentage resolves against
+    the container's width on every side, so top/bottom/left/right insets
+    stay equal. Best-effort ratio sampled from the Figma reference (not an
+    exact pulled value — Figma API access was rate-limited when this was
+    built); revisit if a precise spec turns up.
+  */
+  display: block;
+  padding: 9%;
+}
+
+.works-card-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.works-card .works-card-label {
+  position: absolute;
+  inset: auto 0 0 0;
+  direction: rtl;
+  font-size: 11px;
+  padding: 8px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  color: #fff;
+  opacity: 0;
+}
+
+/*
+  No hover behavior for now — undecided (per Gilad). Previously: image
+  scaled to 1.03x and this label faded in on hover. Both removed, so the
+  label stays hidden and thumbnails are fully static until a direction is
+  picked.
+*/
+
+/* Active-card treatment: whichever project is on screen gets its rail
+   thumbnail swapped for a solid white tile with its title + year printed
+   on it, instead of being left out of the rail entirely. The overlay sits
+   absolutely over the (still-rendered, just visually covered) thumbnail
+   image, so the card's height keeps coming from that image — no separate
+   height rule needed to keep this card the same size as its neighbors.
+   Every card gets this same overlay markup (see script.js); which state
+   shows is purely a CSS question:
+     - .works-card--active: always on, solid opaque white.
+     - hover on any other card: same overlay at 66% white, so the
+       thumbnail underneath still shows through. No transition anywhere
+       here on purpose — Gilad asked for it to appear instantly, not fade. */
+.works-card-active-overlay {
+  position: absolute;
+  inset: 0;
+  direction: rtl;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 12px;
+}
+
+.works-card--active .works-card-active-overlay {
+  display: flex;
+  background: #fff;
+}
+
+.works-card:not(.works-card--active):hover .works-card-active-overlay {
+  display: flex;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.works-card-active-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: 0.12em;
+  color: var(--color-ink);
+}
+
+.works-card-active-year {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-ink);
+  margin-top: 8px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Scrollbars — thin + transparent-track everywhere                       */
+/*                                                                          */
+/* Found the real cause of the "white gap" at the gallery/rail divider:    */
+/* .works-rail scrolls with direction:rtl, and .gallery-scroll scrolls     */
+/* right at the same seam. In RTL, browsers draw the vertical scrollbar    */
+/* on the LEFT edge of the element — exactly on top of the divider — and   */
+/* native scrollbar chrome (a pale, often ~15-17px track) paints above     */
+/* everything, including a z-index'd overlay line. Headless Chromium in    */
+/* my sandbox uses thin auto-hiding overlay scrollbars that barely show    */
+/* in a screenshot, which is why this never reproduced in verification     */
+/* here even though every fix "held up" — the divider was never the bug.  */
+/* Thinning + de-opaquing the scrollbar removes the pale strip everywhere, */
+/* regardless of OS/browser scrollbar defaults.                            */
+/* ---------------------------------------------------------------------- */
+
+/* All three columns' own scrollbars are hidden entirely (per Gilad) — each
+   still scrolls with the mouse wheel / trackpad / touch, just with no
+   visible track or thumb. */
+.info-panel,
+.works-rail,
+.gallery-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.info-panel::-webkit-scrollbar,
+.works-rail::-webkit-scrollbar,
+.gallery-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Responsive                                                              */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 980px) {
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .layout {
+    direction: rtl;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .info-panel,
+  .works-rail {
+    width: 100%;
+    flex: none;
+    border-left: none;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .works-rail {
+    order: 1;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .works-card {
+    flex: 0 0 140px;
+    width: 140px;
+    border-bottom: none;
+    border-left: 1px solid var(--color-line);
+  }
+
+  .gallery-panel {
+    order: 2;
+    border-left: none;
+    height: 60vh;
+  }
+
+  .info-panel {
+    order: 3;
+    height: auto;
+    max-height: none;
+  }
+
+  /* --- About page overrides ------------------------------------------- */
+
+  /* The rail's flex-row/rtl treatment above is built for the horizontal
+     project-thumbnail strip. Applied to the About page's rail (a normal
+     vertical stack of sections), a row-direction flex container with only
+     one child shrink-wraps that child to its content width and — because
+     the container is also direction:rtl — packs it flush against the
+     RIGHT edge, starving the section text down to a sliver and leaving a
+     blank strip on the left. Switching back to block layout here restores
+     a normal full-width vertical column. */
+  .works-rail.works-rail--about {
+    display: block;
+    overflow: visible;
+  }
+
+  /* The 89px+156px fixed grid columns above are Figma's exact desktop sidebar
+     sizing. On a full-width mobile column there's room to spare, so let the
+     description column use it instead of wrapping tightly at 156px. */
+  .works-rail--about .about-entry {
+    grid-template-columns: 89px 1fr;
+  }
+
+  /* The bio+portrait column shouldn't be trapped in the same fixed-height
+     internal-scroll box used for project image galleries — it's short
+     static text, not something that needs its own scroll, and the 60vh cap
+     was hiding the portrait below the fold entirely on narrow phones. */
+  .gallery-panel.gallery-panel--about {
+    height: auto;
+    overflow: visible;
+  }
+
+  .gallery-panel.gallery-panel--about .gallery-scroll {
+    height: auto;
+    overflow: visible;
+  }
+
+  .about-bio-panel {
+    width: auto;
+    margin: 24px 0 0;
+    padding: 0 22px 40px;
+  }
+
+  /* The desktop pin (a fixed 509px offset tuned to the 416px-wide desktop
+     text box) doesn't track mobile's narrower, differently-wrapped text —
+     let the portrait flow right after the bio instead of chasing a
+     hardcoded offset that assumes a specific line count. */
+  .about-portrait {
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 8px auto 0;
+  }
+}

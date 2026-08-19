@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>גלעד היימן — עבודות</title>
+<meta name="description" content="גלעד היימן — פורטפוליו עיצוב גרפי" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="החלף שפה">
+      <span class="lang-he">עב</span> / <span class="lang-en">EN</span>
+    </button>
+    <div class="topbar-right">
+      <a href="#" class="site-name" id="siteNameLink" data-i18n="name">Gilad Heimann</a>
+      <span class="topbar-divider" aria-hidden="true"></span>
+      <a href="#" class="works-link" id="worksLink" data-i18n="works">Work</a>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <aside class="info-panel" id="infoPanel" aria-live="polite">
+      <!-- populated by script.js: project details or the About bio -->
+    </aside>
+
+    <section class="gallery-panel" id="galleryPanel">
+      <div class="gallery-scroll" id="galleryScroll">
+        <!-- populated by script.js: stacked project images -->
+      </div>
+    </section>
+
+    <nav class="works-rail" id="worksRail" aria-label="רשימת עבודות">
+      <!-- populated by script.js: one card per project -->
+    </nav>
+
+    <!--
+      Column dividers, drawn as their own elements on top of everything
+      instead of as a border on one of the two panels that meet there.
+      A border relies on two independently-rounded boxes lining up exactly,
+      which can leave a hairline gap on some displays/zoom levels no matter
+      how much the boxes are made to overlap. A single line painted over the
+      seam can't have that problem — there's only one edge to render.
+    -->
+    <div class="col-divider col-divider--1" aria-hidden="true"></div>
+    <div class="col-divider col-divider--2" aria-hidden="true"></div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
