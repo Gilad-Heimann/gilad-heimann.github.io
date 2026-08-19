@@ -786,6 +786,9 @@ html[data-lang='en'] .lang-toggle .lang-en {
   .works-card-active-title {
     /* 30% smaller than the desktop 13px. */
     font-size: 9.1px;
+    /* Another 20% tighter on top of the previous 16.8px (which was itself
+       20% tighter than the desktop 21px). */
+    line-height: 13.44px;
   }
 
   .gallery-panel {
