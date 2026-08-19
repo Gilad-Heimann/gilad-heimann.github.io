@@ -776,8 +776,9 @@ html[data-lang='en'] .lang-toggle .lang-en {
   }
 
   .works-card {
-    flex: 0 0 140px;
-    width: 140px;
+    /* 25% smaller than the original 140px. */
+    flex: 0 0 105px;
+    width: 105px;
     border-bottom: none;
     border-left: 1px solid var(--color-line);
   }
