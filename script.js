@@ -25,7 +25,7 @@ const PROJECTS = [
   {
     id: 'ratner41',
     figmaNode: '4173:1049', // Ratner41
-    title: '״רטנר 41״',
+    title: 'רטנר 41',
     titleEn: 'Ratner 41',
     year: '2026',
     description: [
@@ -38,6 +38,15 @@ const PROJECTS = [
     ],
     tags: ['תלוי מקום', 'תיעודי', 'צילום', 'אדריכלות', 'מחקר גרפי', 'שיתוף פעולה'],
     tagsEn: ['Site-Specific', 'Documentary', 'Photography', 'Architecture', 'Visual Research', 'Collaboration'],
+    // Optional per-project field (see renderInfoPanel/articleLink handling):
+    // a bold, arrow-marked link to outside press coverage, sitting between
+    // the description and the tags list. Only Ratner 41 has one so far — a
+    // project without this field simply skips that block entirely.
+    articleLink: {
+      url: 'https://www.haaretz.co.il/gallery/architecture/2026-07-21/ty-article-magazine/.premium/0000019f-7fee-d4a5-a5ff-7fef255a0000?gift=854b42e628b84ce5be1a4750a29cf89f#google_vignette',
+      label: 'לינק לכתבה בהארץ',
+      labelEn: 'link to the article in HaAretz',
+    },
     // Real documentation photography (the printed book on its own studio
     // backdrop), same convention as כאן היה עץ תות / שנת שלום: no matting,
     // full-bleed edge-to-edge, rail thumbnail reuses the gallery's own
@@ -681,7 +690,6 @@ function renderInfoPanel() {
     title.dir = 'ltr';
   }
   title.textContent = projectTitle(project);
-  infoPanel.appendChild(title);
 
   const year = document.createElement('p');
   year.className = 'info-year';
@@ -691,7 +699,46 @@ function renderInfoPanel() {
     year.dir = 'ltr';
   }
   year.textContent = project.year ? `[${project.year}]` : '';
-  infoPanel.appendChild(year);
+
+  // On desktop, title/year are just plain siblings flowing down the panel
+  // (see below — this wrapper adds no visual difference there). On mobile
+  // (see the media query in style.css) they instead become the "collapsed
+  // bar" mockup Gilad supplied: title+year stacked on one side, the round
+  // expand button on the other, with the description/tags/article-link
+  // beneath them hidden entirely rather than shown inline. This wrapper is
+  // what makes that a single flex row instead of the button just landing
+  // below the year. Its own dir mirrors the title's — same reasoning as
+  // title.dir/year.dir above — so the row itself reverses correctly (title
+  // side vs. button side swap) in English vs. Hebrew, not just the text
+  // inside it.
+  //
+  // STATIC ONLY for now, per Gilad: the button renders but has no click
+  // handler yet, and the description/tags are hidden outright on mobile
+  // rather than toggled — the expand/collapse interaction is a deliberate
+  // next step once this static look is confirmed correct.
+  const header = document.createElement('div');
+  header.className = 'info-panel-header';
+  if (titleIsEnglish) {
+    header.dir = 'ltr';
+  }
+  const titleBlock = document.createElement('div');
+  titleBlock.className = 'info-title-block';
+  titleBlock.appendChild(title);
+  titleBlock.appendChild(year);
+  header.appendChild(titleBlock);
+
+  const expandToggle = document.createElement('button');
+  expandToggle.type = 'button';
+  expandToggle.className = 'info-expand-toggle';
+  expandToggle.setAttribute('aria-label', 'Expand description');
+  expandToggle.innerHTML =
+    '<svg viewBox="0 0 14 14" aria-hidden="true">' +
+    '<line x1="7" y1="1.5" x2="7" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+    '<line x1="1.5" y1="7" x2="12.5" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+    '</svg>';
+  header.appendChild(expandToggle);
+
+  infoPanel.appendChild(header);
 
   const description = document.createElement('div');
   description.className = 'info-description';
@@ -735,6 +782,50 @@ function renderInfoPanel() {
     description.appendChild(note);
   }
   infoPanel.appendChild(description);
+
+  // Optional: a bold, arrow-marked link out to press coverage — only
+  // rendered for a project that actually has an `articleLink` (Schoken, so
+  // far; see its definition above). Sits between the description and the
+  // tags list, with the same double-gap spacing (32px, matching
+  // .info-year's own "twice the paragraph gap" convention) on both sides —
+  // margin-collapsing against the description's last paragraph (16px) and
+  // .info-glossary's own margin-top (32px) lands it at exactly 32px either
+  // way, so it reads as one more block in the same rhythm rather than a
+  // one-off gap.
+  if (project.articleLink) {
+    const articleLinkIsEnglish = state.lang === 'en' && !!project.articleLink.labelEn;
+    const link = document.createElement('a');
+    link.className = 'info-article-link';
+    link.href = project.articleLink.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    if (articleLinkIsEnglish) {
+      link.dir = 'ltr';
+    }
+    const label = document.createElement('span');
+    label.textContent = articleLinkIsEnglish ? project.articleLink.labelEn : project.articleLink.label;
+    link.appendChild(label);
+    // Diagonal "external link" arrow, drawn the same way as the close
+    // button's SVG X (see buildCloseButton) — a real stroked path rather
+    // than a scaled text glyph, so its proportions stay exact. Second
+    // child in DOM order (after the label) so it lands at the visual END
+    // of the reading direction either way — after the text in RTL
+    // (Hebrew), after the text in LTR (English, via dir="ltr" above) —
+    // matching the Figma reference. Hebrew mirrors the same path
+    // horizontally (--flip, see style.css) rather than using a second,
+    // separately-drawn path — same glyph, just pointing the other way to
+    // read correctly against RTL text.
+    const arrowWrap = document.createElement('span');
+    arrowWrap.className = articleLinkIsEnglish
+      ? 'info-article-link-arrow'
+      : 'info-article-link-arrow info-article-link-arrow--flip';
+    arrowWrap.innerHTML =
+      '<svg viewBox="0 0 12 12" aria-hidden="true">' +
+      '<path d="M3,9 L9,3 M5,3 H9 V7" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    link.appendChild(arrowWrap);
+    infoPanel.appendChild(link);
+  }
 
   const glossary = document.createElement('div');
   glossary.className = 'info-glossary';

@@ -275,6 +275,26 @@ html[data-lang='en'] .lang-toggle .lang-en {
   margin: 0 0 32px;
 }
 
+/*
+  .info-panel-header wraps title+year (in .info-title-block) alongside the
+  round expand button (see renderInfoPanel in script.js for why). On
+  desktop this is a no-op — plain block flow, and .info-expand-toggle is
+  hidden outright below — so title/year look exactly as they did before
+  this wrapper existed. The mobile media query further down is where this
+  actually becomes the collapsed-bar row from Gilad's mockup.
+*/
+.info-panel-header {
+  display: block;
+}
+
+.info-title-block {
+  display: block;
+}
+
+.info-expand-toggle {
+  display: none;
+}
+
 /* End-of-description mark, as in Figma — a solid dot right after the last
    word of the last paragraph. Built in script.js as a real element (paired
    with that last word inside a single white-space:nowrap span) rather than
@@ -295,6 +315,64 @@ html[data-lang='en'] .lang-toggle .lang-en {
   border-radius: 50%;
   background: var(--color-ink);
   vertical-align: middle;
+}
+
+/*
+  The optional article-link block (see renderInfoPanel/articleLink in
+  script.js) — bold, 12px, same font as the description (no font-family
+  override, so it inherits --font-ui off body same as everything else).
+  margin: 32px both sides is the site's existing "double gap" unit (see
+  .info-year's own comment above) — margin-collapsing against the
+  description's last paragraph (16px) and .info-glossary's own margin-top
+  (32px) lands the visible gap at exactly 32px on both sides either way.
+*/
+.info-article-link {
+  /*
+    flex (not inline-flex) + width: fit-content: stays a block-level box —
+    inline-flex is inline-level and inline-level boxes don't margin-collapse
+    with block siblings, which was landing the gaps at 48px/64px (a plain
+    16+32 / 32+32 sum) instead of the intended collapsed 32px/32px. `flex`
+    restores collapsing while `width: fit-content` keeps the box sized to
+    its own label+arrow content instead of stretching the full column width.
+  */
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  margin: 32px 0;
+  /*
+    A fit-content block box, with no auto margin, sits flush at whichever
+    side the CONTAINING block's own direction calls "start" — that's the
+    .info-panel's rtl, i.e. flush right — regardless of the link's own
+    dir="ltr" (set in English mode). dir="ltr" only flips the label/arrow
+    order *inside* the box; without this, the box itself stayed pinned to
+    the right in English too, out of step with the description and tags,
+    which are full-width so their own dir="ltr" reads as plain left-aligned
+    text. margin-inline-end: auto resolves relative to the link's OWN
+    direction — pushing the box flush against its own start edge (still
+    right in Hebrew, since no dir is set there and it inherits rtl; flush
+    left once dir="ltr" applies) so it lines up with the rest either way.
+  */
+  margin-inline-end: auto;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.info-article-link:hover {
+  text-decoration: underline;
+}
+
+.info-article-link-arrow svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+/* Hebrew only (see the JS side of this in renderInfoPanel) — same glyph,
+   mirrored horizontally so it points the other way against RTL text. */
+.info-article-link-arrow--flip svg {
+  transform: scaleX(-1);
 }
 
 .info-glossary {
@@ -860,14 +938,12 @@ html[data-lang='en'] .lang-toggle .lang-en {
   .gallery-panel {
     order: 2;
     border-left: none;
-    /* Gallery box and description box below split whatever height is left
-       after the rail, targeting a rendered description height that's 40%
-       of the gallery's. The grow factor isn't simply 2.5:1 (the inverse
-       of 40%) — the description box's own padding/border (66px, which
-       can't be compressed below zero) is added to its share on top of
-       whatever flex-grow gives it, so gallery needs a larger grow lead
-       than the raw ratio to compensate. */
-    flex: 3.688 1 0;
+    /* Used to split the leftover height with a ~40%-tall scrollable
+       description box below (see the collapsed-bar rules that replaced
+       that box, further down) — now that the box is a thin, content-sized
+       bar instead, the gallery is free to claim essentially all of the
+       remaining space. */
+    flex: 1 1 auto;
     min-height: 0;
     /* Resets the desktop-only 480px shrink floor — irrelevant to a
        full-width column on mobile, and would force horizontal overflow
@@ -875,24 +951,87 @@ html[data-lang='en'] .lang-toggle .lang-en {
     min-width: 0;
   }
 
+  /*
+    Static mockup of Gilad's collapsed mobile info panel: title+year and a
+    round expand button on one thin bar, in place of the old ~40%-tall
+    scrollable description box. STATIC for now — the description/tags/
+    article-link below are hidden outright (not toggled), and the button
+    has no click handler yet; see the long comment in renderInfoPanel
+    (script.js) for the plan to wire up the actual expand/collapse next.
+  */
   .info-panel {
     order: 3;
-    /* Claims its (smaller) share of the leftover space, then the fixed
-       66px of its own padding/border on top (see above) — landing at 40%
-       of the gallery's final rendered height. Scrolls its own contents
-       within that box instead of growing the page; min-height: 0
-       overrides flexbox's default of never shrinking a child below its
-       content size, which would otherwise defeat the overflow-y scroll
-       below. */
-    flex: 1 1 0;
-    min-height: 0;
+    /* Sized to its own (now much shorter) content instead of claiming a
+       flex-grow share of the leftover space — the old min-height:0 +
+       overflow-y:auto scroll trick was there to fit a tall description
+       into a constrained box, which no longer applies to a thin bar. */
+    flex: 0 0 auto;
     height: auto;
     max-height: none;
-    overflow-y: auto;
+    overflow-y: visible;
     /* Marks the boundary now that the panel no longer sits flush against
        the gallery's own bottom edge — 1px to match the rail/gallery
        divider above it, rather than the topbar's heavier 2px rule. */
     border-top: 1px solid var(--color-line);
+  }
+
+  /* The collapsed bar draws its own padding on .info-panel-header instead
+     (14px 18px, tighter than the desktop panel's 24px/22px/40px) — scoped
+     off the About page specifically, since .about-contact has no padding
+     of its own and still depends on .info-panel's base 24/22/40 for its
+     spacing (see the About override further below, which doesn't reset
+     this). */
+  .info-panel:not(.info-panel--about) {
+    padding: 0;
+  }
+
+  .info-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+  }
+
+  .info-title-block .info-title {
+    margin: 0 0 2px;
+  }
+
+  .info-title-block .info-year {
+    /* The 32px desktop value exists to separate the year from the
+       description that used to follow directly beneath it in the same
+       box — moot here since the description is hidden and this is the
+       block's last line, so it collapses back to 0. */
+    margin: 0;
+  }
+
+  .info-expand-toggle {
+    /* Overrides the shared (desktop-hidden) rule above — this is the one
+       context where the button actually shows. Same circular-badge build
+       as .gallery-expanded-close (border + centered stroked icon), just
+       its own size and a "+" instead of an "X". */
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.3px solid var(--color-line);
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  .info-expand-toggle svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+
+  .info-panel:not(.info-panel--about) .info-description,
+  .info-panel:not(.info-panel--about) .info-glossary,
+  .info-panel:not(.info-panel--about) .info-article-link {
+    display: none;
   }
 
   /* About page: left exactly as it was before the independent-scroll
