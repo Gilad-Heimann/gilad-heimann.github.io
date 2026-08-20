@@ -23,6 +23,45 @@ const DEFAULT_TAGS = [
 
 const PROJECTS = [
   {
+    id: 'ratner41',
+    figmaNode: '4173:1049', // Ratner41
+    title: '״רטנר 41״',
+    titleEn: 'Ratner 41',
+    year: '2026',
+    description: [
+      '״רטנר 41״ הוא פרויקט מולטי-דיסציפלינרי, שנוצר מתוך שיתוף פעולה בין המחלקה לתקשורת חזותית ובית הספר לאדריכלות. הוא מלווה שיכון רכבת גנרי לכאורה בחיפה בשלב האחרון של חייו — בניין שעדיין מתפקד כמרחב מגורים אך כבר נמצא בסוף שלב חתימות הבעלים לפינוי-בינוי.',
+      'דרך מסמכים ארכיוניים, תצלומים, ראיונות עם אנשי מקצוע ודיירים, הודעות ווטסאפ ומדיומים נוספים, הפרויקט חושף את מעגלי החיים של הבניין וחותם באפשרות לשימור אדפטיבי שלו כמרחב ציבורי פתוח-בנוי המחבר בין הרחוב, הוואדי והקהילה',
+    ],
+    descriptionEn: [
+      '"Ratner 41" is a multidisciplinary project created through a collaboration between the Department of Visual Communication and the School of Architecture. It follows a seemingly generic railway-style housing block (shikun rakevet) in Haifa during the final stage of its life. The building, which still functions as a residential space but is already nearing the end of the owners\' signing phase for urban renewal (pinui-binui), is read here as a living body: one that was born out of the public housing promise of the 1960s, grew older with its tenants, and now faces uprooting.',
+      'Through archival documents, photographs, interviews with professionals and tenants, WhatsApp messages, and other mediums, the project uncovers the life cycles of the building—nature and landscape, promise, habitation, erosion, another promise, parting, and the possibility of rebirth. As a concluding act, the project discusses the potential for adaptive preservation of the building as an open-built public space connecting the street, the wadi, and the community',
+    ],
+    tags: ['תלוי מקום', 'תיעודי', 'צילום', 'אדריכלות', 'מחקר גרפי', 'שיתוף פעולה'],
+    tagsEn: ['Site-Specific', 'Documentary', 'Photography', 'Architecture', 'Visual Research', 'Collaboration'],
+    // Real documentation photography (the printed book on its own studio
+    // backdrop), same convention as כאן היה עץ תות / שנת שלום: no matting,
+    // full-bleed edge-to-edge, rail thumbnail reuses the gallery's own
+    // first image. thumbBg/bg sampled from the photo's own backdrop tone.
+    thumb: 'assets/gallery/ratner41-1.jpg',
+    thumbBg: '#e7e5e0',
+    bg: '#e7e5e0',
+    galleryFullBleed: true,
+    images: [
+      'assets/gallery/ratner41-1.jpg',
+      'assets/gallery/ratner41-2.jpg',
+      'assets/gallery/ratner41-3.jpg',
+      'assets/gallery/ratner41-4.jpg',
+      'assets/gallery/ratner41-5.jpg',
+      'assets/gallery/ratner41-6.jpg',
+      'assets/gallery/ratner41-7.jpg',
+      'assets/gallery/ratner41-8.jpg',
+      'assets/gallery/ratner41-9.jpg',
+      'assets/gallery/ratner41-10.jpg',
+      'assets/gallery/ratner41-11.jpg',
+    ],
+    ready: true,
+  },
+  {
     id: 'kibutzim',
     figmaNode: '4146:361', // HomePage/Kibutzim — finished
     title: 'המעבדה לתרבות קיבוצית',
@@ -97,8 +136,19 @@ const PROJECTS = [
     thumb: 'assets/thumbs/schoken.png',
     thumbBg: '#e7e8e9',
     bg: '#e7e8e9',
-    images: [],
-    ready: false,
+    // Higher-resolution re-export of the same logo lockup, as the
+    // gallery's first image, so the page shows something real instead of
+    // the "still being designed" placeholder. Each poster after it is
+    // pre-composited (in the source asset itself) onto a bg-matching grey
+    // canvas with its own margin, so — like the logo — it's rendered
+    // full-bleed rather than matted: the two treatments are visually
+    // identical here since the margin is already baked into the image,
+    // and full-bleed is what picks up the standard divider (border-top
+    // between stacked images, border-bottom on the last one) without
+    // needing a one-off CSS rule for this project's matted case.
+    images: ['assets/gallery/schocken-1.png', 'assets/gallery/schocken-poster-1.jpg', 'assets/gallery/schocken-poster-2.png', 'assets/gallery/schocken-poster-4.png', 'assets/gallery/schocken-poster-5.jpg'],
+    galleryFullBleed: true,
+    ready: true,
   },
   {
     id: 'mactoob',
@@ -215,45 +265,6 @@ const PROJECTS = [
       'assets/gallery/shnat-shalom-5.jpg',
       'assets/gallery/shnat-shalom-6.jpg',
       'assets/gallery/shnat-shalom-7.jpg',
-    ],
-    ready: true,
-  },
-  {
-    id: 'ratner41',
-    figmaNode: '4173:1049', // Ratner41
-    title: '״רטנר 41״',
-    titleEn: 'Ratner 41',
-    year: '2026',
-    description: [
-      '״רטנר 41״ הוא פרויקט מולטי-דיסציפלינרי, שנוצר מתוך שיתוף פעולה בין המחלקה לתקשורת חזותית ובית הספר לאדריכלות. הוא מלווה שיכון רכבת גנרי לכאורה בחיפה בשלב האחרון של חייו — בניין שעדיין מתפקד כמרחב מגורים אך כבר נמצא בסוף שלב חתימות הבעלים לפינוי-בינוי.',
-      'דרך מסמכים ארכיוניים, תצלומים, ראיונות עם אנשי מקצוע ודיירים, הודעות ווטסאפ ומדיומים נוספים, הפרויקט חושף את מעגלי החיים של הבניין וחותם באפשרות לשימור אדפטיבי שלו כמרחב ציבורי פתוח-בנוי המחבר בין הרחוב, הוואדי והקהילה',
-    ],
-    descriptionEn: [
-      '"Ratner 41" is a multidisciplinary project created through a collaboration between the Department of Visual Communication and the School of Architecture. It follows a seemingly generic railway-style housing block (shikun rakevet) in Haifa during the final stage of its life. The building, which still functions as a residential space but is already nearing the end of the owners\' signing phase for urban renewal (pinui-binui), is read here as a living body: one that was born out of the public housing promise of the 1960s, grew older with its tenants, and now faces uprooting.',
-      'Through archival documents, photographs, interviews with professionals and tenants, WhatsApp messages, and other mediums, the project uncovers the life cycles of the building—nature and landscape, promise, habitation, erosion, another promise, parting, and the possibility of rebirth. As a concluding act, the project discusses the potential for adaptive preservation of the building as an open-built public space connecting the street, the wadi, and the community',
-    ],
-    tags: ['תלוי מקום', 'תיעודי', 'צילום', 'אדריכלות', 'מחקר גרפי', 'שיתוף פעולה'],
-    tagsEn: ['Site-Specific', 'Documentary', 'Photography', 'Architecture', 'Visual Research', 'Collaboration'],
-    // Real documentation photography (the printed book on its own studio
-    // backdrop), same convention as כאן היה עץ תות / שנת שלום: no matting,
-    // full-bleed edge-to-edge, rail thumbnail reuses the gallery's own
-    // first image. thumbBg/bg sampled from the photo's own backdrop tone.
-    thumb: 'assets/gallery/ratner41-1.jpg',
-    thumbBg: '#e7e5e0',
-    bg: '#e7e5e0',
-    galleryFullBleed: true,
-    images: [
-      'assets/gallery/ratner41-1.jpg',
-      'assets/gallery/ratner41-2.jpg',
-      'assets/gallery/ratner41-3.jpg',
-      'assets/gallery/ratner41-4.jpg',
-      'assets/gallery/ratner41-5.jpg',
-      'assets/gallery/ratner41-6.jpg',
-      'assets/gallery/ratner41-7.jpg',
-      'assets/gallery/ratner41-8.jpg',
-      'assets/gallery/ratner41-9.jpg',
-      'assets/gallery/ratner41-10.jpg',
-      'assets/gallery/ratner41-11.jpg',
     ],
     ready: true,
   },
@@ -425,8 +436,12 @@ const state = {
   activeId: PROJECTS[0].id,
   view: 'project', // 'project' | 'about'
   lang: 'en', // 'he' | 'en' — English is the site's default; see applyLanguage()
+  // Index into the active project's `images` array while its click-to-expand
+  // stack view is open, or null the rest of the time.
+  expandedIndex: null,
 };
 
+const layoutEl = document.querySelector('.layout');
 const infoPanel = document.getElementById('infoPanel');
 const galleryPanel = document.getElementById('galleryPanel');
 const galleryScroll = document.getElementById('galleryScroll');
@@ -767,11 +782,203 @@ function renderAboutGallery() {
   galleryScroll.appendChild(wrap);
 }
 
+// Builds the actual media element (video or img) for one gallery src — used
+// by buildGalleryImageWrap, so the normal stacked list and the expanded
+// stack view stay visually identical instead of drifting apart over time.
+// Returns null for an empty slot (project.images entries can be `null` —
+// see Kibutzim's third slot — meaning the Figma frame reserves the spot but
+// has no image fill yet).
+function buildGalleryMedia(src, project) {
+  if (src && typeof src === 'object' && src.sources) {
+    // Hover-to-play clip: rests on its poster frame (the video's own first
+    // frame), plays on loop while the pointer is over it, and resets back
+    // to the poster frame — not just paused mid-clip — the moment the
+    // pointer leaves. attachHoverPlay() below wires up that behavior on
+    // whichever wrapper ends up containing this element.
+    const video = document.createElement('video');
+    video.className = 'gallery-video';
+    video.poster = src.poster;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+    video.setAttribute('aria-label', projectTitle(project));
+    src.sources.forEach(({ src: sourceSrc, type }) => {
+      const sourceEl = document.createElement('source');
+      sourceEl.src = sourceSrc;
+      sourceEl.type = type;
+      video.appendChild(sourceEl);
+    });
+    return video;
+  }
+  if (src) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = projectTitle(project);
+    return img;
+  }
+  return null;
+}
+
+function attachHoverPlay(wrap, video) {
+  wrap.addEventListener('mouseenter', () => {
+    video.play().catch(() => {
+      // Autoplay can be blocked in some browsers even on hover with no
+      // user-gesture history yet — failing silently just leaves the poster
+      // frame showing, which is a safe fallback.
+    });
+  });
+  wrap.addEventListener('mouseleave', () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+}
+
+// The click-to-expand interaction is now the one system used across every
+// project's gallery: clicking any image blows the whole stacked gallery up
+// to full width (info panel + works-rail hidden) with every image still
+// beneath each other, same dividers as the normal view, scrollable — see
+// renderExpandedStack. Every image in every ready project is a valid entry
+// point into it.
+function isExpandableImage(project, index) {
+  return true;
+}
+
+function expandImage(index) {
+  state.expandedIndex = index;
+  renderGallery();
+}
+
+function closeExpandedImage() {
+  state.expandedIndex = null;
+  renderGallery();
+}
+
+// The one close button shape used by the expanded stack view everywhere on
+// the site.
+function buildCloseButton(onClick) {
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'gallery-expanded-close';
+  closeBtn.setAttribute('aria-label', 'Close');
+  // Drawn as an SVG X (two crossed lines) rather than a "×" text glyph —
+  // a glyph's size/weight relative to the circle varies by font and is
+  // hard to pin to a specific ratio; the SVG guarantees the ~42%-of-
+  // diameter mark measured off the reference every time. viewBox is sized
+  // to match the CSS display size 1:1 (see .gallery-expanded-close svg),
+  // so stroke-width below is a real px value, directly comparable to the
+  // button's own border-width when tuning "line weight" independently of
+  // size.
+  closeBtn.innerHTML =
+    '<svg viewBox="0 0 10.8 10.8" aria-hidden="true">' +
+    '<line x1="0.9" y1="0.9" x2="9.9" y2="9.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<line x1="9.9" y1="0.9" x2="0.9" y2="9.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+    '</svg>';
+  closeBtn.addEventListener('click', onClick);
+  return closeBtn;
+}
+
+// Builds one stacked gallery item, shared by both the normal (narrow,
+// non-expanded) render loop below and renderExpandedStack, which reuses
+// this verbatim just at full width instead of the narrower gallery column.
+// `clickable` is what tells the two contexts apart: the normal view wires
+// up the click-to-expand handler, the expanded stack doesn't (there's
+// nothing further to expand into once you're already looking at the whole
+// stack).
+//
+// `expandedContext` (true whenever this is called from renderExpandedStack)
+// changes how a MATTED project (Kibutzim, Mactoob — a graphic shown
+// "floating" on a solid-color backdrop, as opposed to real photography)
+// gets released for full screen: it keeps its own colored matte background
+// and the same inset ratio around the graphic — nothing about the graphic's
+// own proportions or the matting percentage changes — only the ~900px cap
+// and auto-centering margin that constrained it to the narrow column are
+// dropped, so that colored matte itself stretches out to fill the full
+// width, snapped edge-to-edge against the dividers, with the (now larger,
+// same %) padding doing the rest. A `galleryFullBleed` project (real
+// photography, no matte to begin with) is unaffected by expandedContext —
+// it already renders edge-to-edge in both contexts via --full.
+function buildGalleryImageWrap(project, index, clickable, expandedContext) {
+  const wrap = document.createElement('div');
+  const classes = ['gallery-image-wrap'];
+  if (project.galleryFullBleed) {
+    classes.push('gallery-image-wrap--full');
+  } else if (expandedContext) {
+    classes.push('gallery-image-wrap--stretched');
+  }
+  wrap.className = classes.join(' ');
+
+  const media = buildGalleryMedia(project.images[index], project);
+  if (media) {
+    if (media.tagName === 'VIDEO') {
+      attachHoverPlay(wrap, media);
+    }
+    wrap.appendChild(media);
+  } else {
+    // Slot exists in the Figma frame but has no image fill yet.
+    const slot = document.createElement('div');
+    slot.className = 'gallery-image-slot-empty';
+    slot.textContent = 'התמונה הזו עדיין לא הועלתה בפיגמה';
+    wrap.appendChild(slot);
+  }
+
+  if (clickable && isExpandableImage(project, index)) {
+    wrap.classList.add('gallery-image-wrap--expandable');
+    wrap.addEventListener('click', () => expandImage(index));
+  }
+
+  return wrap;
+}
+
+// The one expand treatment used everywhere on the site: instead of one
+// image at a time with arrow zones to step through the gallery, expanding
+// blows up the WHOLE stacked gallery to full width — every image stays
+// right where it already was, beneath each other with the same dividers as
+// the normal view — and scrolling through that bigger stack is the entire
+// interaction. The close button can't be positioned relative to any single
+// image here (there isn't one "the" expanded image), so it's pinned to the
+// viewport itself instead (see .gallery-expanded-close in style.css) and
+// lives outside galleryScroll, on the panel, so scrolling the stack
+// doesn't carry it away.
+function renderExpandedStack(project, index) {
+  galleryScroll.innerHTML = '';
+
+  project.images.forEach((src, i) => {
+    galleryScroll.appendChild(buildGalleryImageWrap(project, i, false, true));
+  });
+
+  const closeBtn = buildCloseButton(() => closeExpandedImage());
+  galleryPanel.appendChild(closeBtn);
+
+  // Land on the image that was actually clicked, not always back at the
+  // top of image 1 — expanding image 4 should feel like zooming in on
+  // image 4, not resetting your place in the gallery.
+  const targetWrap = galleryScroll.children[index];
+  if (targetWrap) {
+    targetWrap.scrollIntoView({ block: 'start' });
+  }
+}
+
 function renderGallery() {
+  // renderExpandedStack's close button lives on galleryPanel itself, not
+  // inside galleryScroll (see there for why) — so it's the one piece of
+  // expanded-view markup that survives a `galleryScroll.innerHTML = ''`
+  // and has to be cleaned up explicitly, on every render, regardless of
+  // which branch below actually runs. Otherwise closing the stack, or
+  // switching projects/views out of it, leaves a dead fixed button
+  // behind (and re-expanding the stack would stack a second one on top).
+  galleryPanel.querySelectorAll('.gallery-expanded-close').forEach((el) => el.remove());
+
   // Mobile-only hook: the About page's bio+portrait shouldn't be trapped in
   // the same fixed-height internal-scroll box used for project image
   // galleries — see .gallery-panel--about in style.css.
   galleryPanel.classList.toggle('gallery-panel--about', state.view === 'about');
+
+  const isExpanded = state.view === 'project' && state.expandedIndex !== null;
+  // No transition anywhere here on purpose — Gilad asked for this switch to
+  // be instant, same as the works-rail active-card treatment above.
+  layoutEl.classList.toggle('layout--expanded', isExpanded);
+  galleryScroll.classList.toggle('gallery-scroll--expanded', isExpanded);
 
   if (state.view === 'about') {
     renderAboutGallery();
@@ -780,62 +987,17 @@ function renderGallery() {
 
   const project = getProject(state.activeId);
   galleryPanel.style.background = project.bg;
+
+  if (isExpanded) {
+    renderExpandedStack(project, state.expandedIndex);
+    return;
+  }
+
   galleryScroll.innerHTML = '';
 
   if (project.ready && project.images.length) {
-    project.images.forEach((src) => {
-      const wrap = document.createElement('div');
-      wrap.className = project.galleryFullBleed
-        ? 'gallery-image-wrap gallery-image-wrap--full'
-        : 'gallery-image-wrap';
-
-      if (src && typeof src === 'object' && src.sources) {
-        // Hover-to-play clip: rests on its poster frame (the video's own
-        // first frame), plays on loop while the pointer is over it, and
-        // resets back to the poster frame — not just paused mid-clip — the
-        // moment the pointer leaves.
-        const video = document.createElement('video');
-        video.className = 'gallery-video';
-        video.poster = src.poster;
-        video.muted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.preload = 'metadata';
-        video.setAttribute('aria-label', projectTitle(project));
-        src.sources.forEach(({ src: sourceSrc, type }) => {
-          const sourceEl = document.createElement('source');
-          sourceEl.src = sourceSrc;
-          sourceEl.type = type;
-          video.appendChild(sourceEl);
-        });
-
-        wrap.addEventListener('mouseenter', () => {
-          video.play().catch(() => {
-            // Autoplay can be blocked in some browsers even on hover with
-            // no user-gesture history yet — failing silently just leaves
-            // the poster frame showing, which is a safe fallback.
-          });
-        });
-        wrap.addEventListener('mouseleave', () => {
-          video.pause();
-          video.currentTime = 0;
-        });
-
-        wrap.appendChild(video);
-      } else if (src) {
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = projectTitle(project);
-        wrap.appendChild(img);
-      } else {
-        // Slot exists in the Figma frame but has no image fill yet.
-        const slot = document.createElement('div');
-        slot.className = 'gallery-image-slot-empty';
-        slot.textContent = 'התמונה הזו עדיין לא הועלתה בפיגמה';
-        wrap.appendChild(slot);
-      }
-
-      galleryScroll.appendChild(wrap);
+    project.images.forEach((src, index) => {
+      galleryScroll.appendChild(buildGalleryImageWrap(project, index, true));
     });
     return;
   }

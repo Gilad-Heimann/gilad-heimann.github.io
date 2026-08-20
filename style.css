@@ -555,6 +555,25 @@ html[data-lang='en'] .lang-toggle .lang-en {
   border-bottom: 1px solid var(--color-line);
 }
 
+.gallery-image-wrap--stretched {
+  /*
+    Used only in the expanded stack view, only for matted (non-full-bleed)
+    projects — releases the item from the ~900px cap and auto-centering
+    margin that hold it to the narrow gallery column's width, so the
+    colored matte itself stretches out edge-to-edge, snapped against the
+    dividers. The 5% padding is untouched and inherited straight from
+    .gallery-image-wrap above: it's a percentage, so it resolves against
+    this now-wider container and stays the exact same INSET RATIO around
+    the graphic, just bigger in absolute px — same proportions, not a
+    different look. Because padding (unlike --full) is still present, the
+    background matte already shows through below the last item on its
+    own, same as the narrow normal view — no separate :last-child bottom-
+    divider rule needed here.
+  */
+  max-width: none;
+  margin: 0;
+}
+
 .gallery-image-wrap img {
   width: 100%;
   height: auto;
@@ -939,5 +958,87 @@ html[data-lang='en'] .lang-toggle .lang-en {
     left: auto;
     transform: none;
     margin: 8px auto 0;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Expanded gallery image — click one image to see it big, instantly (no  */
+/* transition), with the other two columns hidden and a close button      */
+/* snapped to the image's own corner. Rolling this out one image at a     */
+/* time (see script.js) — right now only Kibutzim's first gallery item is */
+/* wired up to trigger it. Placed at the very end of the file on purpose: */
+/* .layout--expanded needs to win over both the desktop rules above and   */
+/* the mobile media query above it, and simple display:none/flex-basis    */
+/* overrides here do that without needing extra specificity or !important */
+/* on either earlier block.                                               */
+/* ---------------------------------------------------------------------- */
+
+.gallery-image-wrap--expandable {
+  cursor: pointer;
+}
+
+.layout--expanded .info-panel,
+.layout--expanded .works-rail,
+.layout--expanded .col-divider {
+  display: none;
+}
+
+.layout--expanded .gallery-panel {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+/*
+  The expanded STACK (all of a gallery's images shown beneath each other,
+  scrollable — see renderExpandedStack in script.js) has no single frame
+  for the button to sit relative to — it's pinned to the viewport itself
+  instead of any one image, staying in the same spot on screen no matter
+  how far the stack is scrolled. z-index clears the topbar's own (10) so
+  it stays clickable above it too.
+*/
+.gallery-expanded-close {
+  position: fixed;
+  top: calc(var(--topbar-h) + 24px);
+  right: 24px;
+  z-index: 15;
+  width: 25.92px;
+  height: 25.92px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  /* Border and the X's stroke (below) are tuned as their own "line weight"
+     property, independent of the button's own size — this round lightened
+     both by 20% off their prior values (1.6px) rather than just letting
+     them passively shrink with the button. */
+  border: 1.28px solid var(--color-line);
+  color: var(--color-ink);
+}
+
+.gallery-expanded-close:hover {
+  background: #ffffff;
+}
+
+.gallery-expanded-close svg {
+  /* ~42% of the button's diameter, matching the reference's X-to-circle
+     ratio — a plain text "×" glyph can't hit this reliably across fonts,
+     so the mark is drawn directly instead. */
+  display: block;
+  width: 10.8px;
+  height: 10.8px;
+}
+
+@media (max-width: 980px) {
+  .layout--expanded .info-panel,
+  .layout--expanded .works-rail {
+    display: none;
+  }
+
+  .layout--expanded .gallery-panel {
+    order: 1;
+    flex: 1 1 auto;
+    height: 100%;
   }
 }
