@@ -993,8 +993,14 @@ html[data-lang='en'] .lang-toggle .lang-en {
     padding: 14px 18px;
   }
 
+  /* Every text style inside the mobile info panel (collapsed-bar title/year
+     plus the description/link/tags in the open box below) is 1px larger
+     than its desktop counterpart, per Gilad — mobile reads at arm's length
+     rather than up close, so the extra point keeps it as legible as the
+     desktop sizes are there. */
   .info-title-block .info-title {
     margin: 0 0 2px;
+    font-size: 14px;
   }
 
   .info-title-block .info-year {
@@ -1003,6 +1009,7 @@ html[data-lang='en'] .lang-toggle .lang-en {
        box — moot here since the description is hidden and this is the
        block's last line, so it collapses back to 0. */
     margin: 0;
+    font-size: 11px;
   }
 
   .info-expand-toggle {
@@ -1045,6 +1052,21 @@ html[data-lang='en'] .lang-toggle .lang-en {
     overflow-y: auto;
     padding: 16px 18px 24px;
     border-top: 1px solid var(--color-line);
+  }
+
+  /* The rest of the +1px pass (see the title/year comment above) — the
+     description paragraphs, the optional article-link, and the tags list,
+     all 1px over their desktop sizes (14/12/10 → 15/13/11). */
+  .info-collapsible .info-description p {
+    font-size: 15px;
+  }
+
+  .info-collapsible .info-article-link {
+    font-size: 13px;
+  }
+
+  .info-collapsible .info-glossary li {
+    font-size: 11px;
   }
 
   /* About page: left exactly as it was before the independent-scroll
