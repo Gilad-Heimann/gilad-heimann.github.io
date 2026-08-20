@@ -448,6 +448,11 @@ const state = {
   // Index into the active project's `images` array while its click-to-expand
   // stack view is open, or null the rest of the time.
   expandedIndex: null,
+  // Mobile only (see the .info-panel-header/.info-collapsible split in
+  // renderInfoPanel below) — whether the collapsed info bar's description
+  // box is currently open. Has no effect above the 980px breakpoint, where
+  // the description is always visible and this button is hidden outright.
+  mobileInfoExpanded: false,
 };
 
 const layoutEl = document.querySelector('.layout');
@@ -705,17 +710,12 @@ function renderInfoPanel() {
   // (see the media query in style.css) they instead become the "collapsed
   // bar" mockup Gilad supplied: title+year stacked on one side, the round
   // expand button on the other, with the description/tags/article-link
-  // beneath them hidden entirely rather than shown inline. This wrapper is
-  // what makes that a single flex row instead of the button just landing
-  // below the year. Its own dir mirrors the title's — same reasoning as
-  // title.dir/year.dir above — so the row itself reverses correctly (title
-  // side vs. button side swap) in English vs. Hebrew, not just the text
-  // inside it.
-  //
-  // STATIC ONLY for now, per Gilad: the button renders but has no click
-  // handler yet, and the description/tags are hidden outright on mobile
-  // rather than toggled — the expand/collapse interaction is a deliberate
-  // next step once this static look is confirmed correct.
+  // beneath them (now grouped in the .info-collapsible wrapper built below)
+  // hidden until the button opens them. This wrapper is what makes that a
+  // single flex row instead of the button just landing below the year. Its
+  // own dir mirrors the title's — same reasoning as title.dir/year.dir
+  // above — so the row itself reverses correctly (title side vs. button
+  // side swap) in English vs. Hebrew, not just the text inside it.
   const header = document.createElement('div');
   header.className = 'info-panel-header';
   if (titleIsEnglish) {
@@ -727,18 +727,46 @@ function renderInfoPanel() {
   titleBlock.appendChild(year);
   header.appendChild(titleBlock);
 
+  // Mobile only — toggles state.mobileInfoExpanded and re-renders, which
+  // swaps this button's own icon/label (+ / −) and reveals or re-hides the
+  // .info-collapsible box via the .info-panel--mobile-expanded class below.
+  // A no-op on desktop, where the button is hidden outright (see
+  // .info-expand-toggle in style.css) and the collapsible content is always
+  // visible regardless of this state.
   const expandToggle = document.createElement('button');
   expandToggle.type = 'button';
   expandToggle.className = 'info-expand-toggle';
-  expandToggle.setAttribute('aria-label', 'Expand description');
-  expandToggle.innerHTML =
-    '<svg viewBox="0 0 14 14" aria-hidden="true">' +
-    '<line x1="7" y1="1.5" x2="7" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
-    '<line x1="1.5" y1="7" x2="12.5" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
-    '</svg>';
+  expandToggle.setAttribute('aria-label', state.mobileInfoExpanded ? 'Collapse description' : 'Expand description');
+  expandToggle.setAttribute('aria-expanded', String(state.mobileInfoExpanded));
+  expandToggle.innerHTML = state.mobileInfoExpanded
+    ? // Minus — same stroke/size as the plus below, just the vertical bar
+      // dropped.
+      '<svg viewBox="0 0 14 14" aria-hidden="true">' +
+      '<line x1="1.5" y1="7" x2="12.5" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+      '</svg>'
+    : '<svg viewBox="0 0 14 14" aria-hidden="true">' +
+      '<line x1="7" y1="1.5" x2="7" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<line x1="1.5" y1="7" x2="12.5" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+      '</svg>';
+  expandToggle.addEventListener('click', () => {
+    state.mobileInfoExpanded = !state.mobileInfoExpanded;
+    renderInfoPanel();
+    updateMobileExpandHeight();
+  });
   header.appendChild(expandToggle);
 
   infoPanel.appendChild(header);
+  infoPanel.classList.toggle('info-panel--mobile-expanded', state.mobileInfoExpanded);
+
+  // Description/article-link/tags are grouped in one wrapper so mobile can
+  // show or hide them as a single unit (rather than three separate
+  // display:none selectors) and give that unit its own scrollable height —
+  // see .info-collapsible in style.css. A plain, padding/border-free div on
+  // desktop and in the mobile-collapsed state, so it doesn't disturb the
+  // margin-collapsing between description/article-link/glossary described
+  // in the comments below.
+  const collapsible = document.createElement('div');
+  collapsible.className = 'info-collapsible';
 
   const description = document.createElement('div');
   description.className = 'info-description';
@@ -781,7 +809,7 @@ function renderInfoPanel() {
     note.textContent = 'הטקסט לעמוד הזה עוד לא נכתב בפיגמה — ברגע שהוא יתווסף, הוא יופיע כאן אוטומטית.';
     description.appendChild(note);
   }
-  infoPanel.appendChild(description);
+  collapsible.appendChild(description);
 
   // Optional: a bold, arrow-marked link out to press coverage — only
   // rendered for a project that actually has an `articleLink` (Schoken, so
@@ -824,7 +852,7 @@ function renderInfoPanel() {
       '<path d="M3,9 L9,3 M5,3 H9 V7" fill="none" stroke="currentColor" stroke-width="1.6" ' +
       'stroke-linecap="round" stroke-linejoin="round"/></svg>';
     link.appendChild(arrowWrap);
-    infoPanel.appendChild(link);
+    collapsible.appendChild(link);
   }
 
   const glossary = document.createElement('div');
@@ -843,7 +871,9 @@ function renderInfoPanel() {
     list.appendChild(li);
   });
   glossary.appendChild(list);
-  infoPanel.appendChild(glossary);
+  collapsible.appendChild(glossary);
+
+  infoPanel.appendChild(collapsible);
 }
 
 function renderAboutGallery() {
@@ -1110,29 +1140,65 @@ function renderTopbar() {
   siteNameLink.classList.toggle('is-active', state.view === 'about');
 }
 
+// Mobile only — sizes the open .info-collapsible box to "50% of the screen
+// minus the works-rail thumbnail strip and the topbar", per Gilad. Read as
+// live element heights rather than hardcoded numbers because the rail's
+// height itself isn't fixed (.works-card images keep their natural aspect
+// ratio at a fixed 105px width, so the row's height depends on whichever
+// images are loaded) and the topbar's height already lives in the
+// --topbar-h custom property. Exposed as its own --mobile-info-expand-h
+// custom property (rather than an inline height on the box directly) so
+// style.css can read it inside the max-width:980px query without this
+// function needing to know anything about the box's own selector. A no-op
+// above that breakpoint — nothing there reads the property — so it's safe
+// to call unconditionally.
+function updateMobileExpandHeight() {
+  const topbarEl = document.querySelector('.topbar');
+  if (!topbarEl || !worksRail) {
+    return;
+  }
+  const available = window.innerHeight - topbarEl.offsetHeight - worksRail.offsetHeight;
+  const boxHeight = Math.max(0, available * 0.5);
+  document.documentElement.style.setProperty('--mobile-info-expand-h', `${boxHeight}px`);
+}
+
 function render() {
   renderTopbar();
   renderInfoPanel();
   renderGallery();
   renderRail();
+  updateMobileExpandHeight();
 }
 
 function selectProject(id) {
   state.activeId = id;
   state.view = 'project';
+  // Always start a newly-opened project with the mobile description
+  // collapsed, rather than carrying over whatever state the previous
+  // project's box was left in.
+  state.mobileInfoExpanded = false;
   render();
   galleryScroll.scrollTo({ top: 0 });
 }
 
 function showAbout() {
   state.view = 'about';
+  state.mobileInfoExpanded = false;
   render();
 }
 
 function showWorks() {
   state.view = 'project';
+  state.mobileInfoExpanded = false;
   render();
 }
+
+// Recomputes the open box's height on resize/orientation change (e.g.
+// rotating the phone, or the address bar showing/hiding on iOS Safari) —
+// window.innerHeight and the rail's own height can both change without any
+// of render()'s other steps needing to re-run.
+window.addEventListener('resize', updateMobileExpandHeight);
+window.addEventListener('orientationchange', updateMobileExpandHeight);
 
 worksLink.addEventListener('click', (e) => {
   e.preventDefault();
