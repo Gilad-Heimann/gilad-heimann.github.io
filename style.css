@@ -923,8 +923,48 @@ html[data-lang='en'] .lang-toggle .lang-en {
     /* 25% smaller than the original 140px. */
     flex: 0 0 105px;
     width: 105px;
+    /* Square instead of riding on whatever height each thumbnail's own
+       aspect ratio happens to produce (desktop's behavior) — width is
+       already fixed above, so this is what actually pins the height to
+       match it. See the two rules below for how the two thumbnail types
+       (full-bleed vs. framed/matted) each fill that square. */
+    aspect-ratio: 1 / 1;
     border-bottom: none;
     border-left: 1px solid var(--color-line);
+  }
+
+  /* Full-bleed thumbnails (no .works-card-frame — real photography, same
+     distinction as .gallery-image-wrap--full in the main gallery): cropped
+     to fill the square via object-fit, same as a standard thumbnail grid.
+     Absolutely positioned rather than the desktop width:100%/height:auto,
+     since that pair can't produce "fills a square" on its own. */
+  .works-card > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Framed/matted thumbnails (Kibutzim, Mactoob, etc. — a screenshot inset
+     on its own background color): the square comes from the frame filling
+     the card, but the screenshot itself stays uncropped and centered inside
+     it (object-fit: contain) rather than cropped to fill — cropping into an
+     actual screenshot would cut off real content, and Gilad has been
+     explicit elsewhere (the Kibutzim/Mactoob gallery fix) that these should
+     keep their exact proportions rather than being stretched or cropped. */
+  .works-card-frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .works-card-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .works-card-active-title {
@@ -994,13 +1034,18 @@ html[data-lang='en'] .lang-toggle .lang-en {
   }
 
   /* Every text style inside the mobile info panel (collapsed-bar title/year
-     plus the description/link/tags in the open box below) is 1px larger
-     than its desktop counterpart, per Gilad — mobile reads at arm's length
+     plus the description/link/tags in the open box below) started out 1px
+     larger than its desktop counterpart — mobile reads at arm's length
      rather than up close, so the extra point keeps it as legible as the
-     desktop sizes are there. */
+     desktop sizes are there. Title and description have since moved past
+     that first pass to both sit at 16px (see each rule's own comment for
+     that history); year/link/tags are still at their original +1px. */
   .info-title-block .info-title {
     margin: 0 0 2px;
-    font-size: 14px;
+    /* Matched to the description's own mobile size (16px, see
+       .info-collapsible .info-description p below) rather than staying at
+       the +1px-pass's 14px, per Gilad. */
+    font-size: 16px;
   }
 
   .info-title-block .info-year {
@@ -1057,10 +1102,13 @@ html[data-lang='en'] .lang-toggle .lang-en {
   }
 
   /* The rest of the +1px pass (see the title/year comment above) — the
-     description paragraphs, the optional article-link, and the tags list,
-     all 1px over their desktop sizes (14/12/10 → 15/13/11). */
+     article-link and tags list stay 1px over their desktop sizes
+     (12/10 → 13/11). Description paragraphs went through a couple of
+     changes of mind after that first pass (14px desktop → 15px for the
+     +1px pass → briefly matched to the title's 14px) and landed here: 1px
+     over that +1px-pass size, i.e. 16px, per Gilad's latest call. */
   .info-collapsible .info-description p {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .info-collapsible .info-article-link {
