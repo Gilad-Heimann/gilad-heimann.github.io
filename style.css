@@ -1050,8 +1050,10 @@ html[data-lang='en'] .lang-toggle .lang-en {
     display: block;
     height: var(--mobile-info-expand-h, 40vh);
     overflow-y: auto;
+    /* No border-top here (tried it, Gilad flagged it) — the box should read
+       as a direct continuation of the collapsed bar above it, not a
+       separately-framed panel. */
     padding: 16px 18px 24px;
-    border-top: 1px solid var(--color-line);
   }
 
   /* The rest of the +1px pass (see the title/year comment above) — the
